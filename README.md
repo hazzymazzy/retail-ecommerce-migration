@@ -25,7 +25,7 @@ terraform destroy
 - Keep repo **private**. Never commit secrets or tfstate files.
 
 ## Live demo
-CloudFront: 
+CloudFront: https://d14rlgaavaj9fb.cloudfront.net
 
 
 ---

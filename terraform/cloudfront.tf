@@ -7,15 +7,15 @@ resource "aws_cloudfront_origin_access_control" "oac" {
   signing_protocol                  = "sigv4"
 }
 
-# CloudFront distribution (HTTPS, serves index.html by default)
+# CloudFront distribution (HTTPS) serving from PRIVATE S3 via OAC
 resource "aws_cloudfront_distribution" "cdn" {
   enabled             = true
   default_root_object = "index.html"
 
-  origins {
-    origin_id                = "s3-origin"
-    domain_name              = aws_s3_bucket.website.bucket_regional_domain_name
-    origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
+  origin {
+    origin_id                 = "s3-origin"
+    domain_name               = aws_s3_bucket.website.bucket_regional_domain_name
+    origin_access_control_id  = aws_cloudfront_origin_access_control.oac.id
   }
 
   default_cache_behavior {
@@ -41,7 +41,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   tags = local.common_tags
 }
 
-# Bucket policy granting CloudFront access via OAC (private, not public)
+# Bucket policy granting CloudFront access via OAC (keeps S3 private)
 data "aws_caller_identity" "current" {}
 
 resource "aws_s3_bucket_policy" "allow_cloudfront" {

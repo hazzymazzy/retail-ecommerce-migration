@@ -1,9 +1,10 @@
 output "website_bucket_name" {
   value       = local.bucket_name
-  description = "S3 bucket hosting the website"
+  description = "S3 bucket storing site content (private)"
 }
 
-output "website_endpoint" {
-  value       = aws_s3_bucket_website_configuration.site.website_endpoint
-  description = "Public website URL (http)"
+# The public URL is now served by CloudFront
+output "cloudfront_url" {
+  value       = "https://${aws_cloudfront_distribution.cdn.domain_name}"
+  description = "Public HTTPS URL for the site"
 }

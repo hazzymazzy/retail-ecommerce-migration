@@ -36,3 +36,12 @@ override.tf.json
 .terraformrc
 terraform.rc
 *.tfplan
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate*
+crash.log
+*.tfplan
+.DS_Store
+Thumbs.db

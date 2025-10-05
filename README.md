@@ -28,8 +28,6 @@ terraform destroy
 CloudFront: https://d1hpky7ifu9ucz.cloudfront.net
 
 
- Awesome idea. Here’s a drop-in README section you can paste into your repo. It’s written for AWS Academy CloudShell (ephemeral VMs) and covers both **first-time** setup and **every session** steps, plus deploy/teardown and quick fixes.
-
 ---
 
 # Starting a New AWS Sandbox/CloudShell Session (Team Guide)

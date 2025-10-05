@@ -4,17 +4,18 @@ variable "aws_region" {
   default     = "ap-southeast-2" # Sydney
 }
 
-# Make the bucket name globally unique (change this to your own suffix)
+# S3 bucket names must be globally unique
 variable "bucket_name_suffix" {
-  description = "Unique suffix for the S3 bucket name (e.g., your student ID)"
+  description = "Unique suffix for the S3 bucket name"
   type        = string
-  default     = "u3223940"  # <-- change if needed
+  default     = "hazzy-uc-2025"   # chosen suffix
 }
 
 locals {
   project_name = "retail-store-demo"
   bucket_name  = "${local.project_name}-${var.bucket_name_suffix}"
-  common_tags  = {
+
+  common_tags = {
     Project = "retail-ecommerce"
     Env     = "dev"
     Owner   = "team"

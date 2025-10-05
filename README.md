@@ -248,8 +248,4 @@ terraform init -upgrade
 
 **All Group Members can follow this README to deploy, update, or destroy the demo app in AWS CloudShell (Sydney region).**
 
-```
 
----
-
-```

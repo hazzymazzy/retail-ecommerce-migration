@@ -12,9 +12,8 @@ Deploys a public static website to Amazon S3 using Terraform (AWS Academy Sandbo
    terraform init
    terraform plan -out=tfplan
    terraform apply tfplan
-````
-
-4. Copy the `website_endpoint` from Terraform output and open it in your browser.
+   
+````4. Copy the `website_endpoint` from Terraform output and open it in your browser.
 
 ## Destroy
 

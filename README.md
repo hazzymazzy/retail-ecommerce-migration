@@ -1,3 +1,4 @@
+
 # Retail E-Commerce Migration (S3 static site)
 
 Deploys a public static website to Amazon S3 using Terraform (AWS Academy Sandbox friendly).
@@ -11,22 +12,25 @@ Deploys a public static website to Amazon S3 using Terraform (AWS Academy Sandbo
    terraform init
    terraform plan -out=tfplan
    terraform apply tfplan
-   ```
-4) Copy the `website_endpoint` from Terraform output and open it in your browser.
+````
+
+4. Copy the `website_endpoint` from Terraform output and open it in your browser.
 
 ## Destroy
+
 ```bash
 cd terraform
 terraform destroy
 ```
 
 ## Notes
-- Update `bucket_name_suffix` in `variables.tf` to make the bucket globally unique.
-- Keep repo **private**. Never commit secrets or tfstate files.
+
+* Update `bucket_name_suffix` in `variables.tf` to make the bucket globally unique.
+* Keep repo **private**. Never commit secrets or tfstate files.
 
 ## Live demo
-CloudFront: https://d14rlgaavaj9fb.cloudfront.net
 
+CloudFront: [https://d14rlgaavaj9fb.cloudfront.net](https://d14rlgaavaj9fb.cloudfront.net)
 
 ---
 
@@ -59,49 +63,37 @@ git config --global user.name  "Your Name"
 git config --global user.email "your_uni_email@uni.canberra.edu.au"
 
 # 3) (Recommended) Use SSH with GitHub so you never paste passwords
-#    a) Generate a new SSH key (press Enter for all prompts)
 ssh-keygen -t ed25519 -C "your_uni_email@uni.canberra.edu.au"
-
-#    b) Start agent & add your key
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub  # Add this to GitHub > Settings > SSH and GPG keys > New SSH key
 
-#    c) Copy your public key and add it at: GitHub > Settings > SSH and GPG keys > New SSH key
-cat ~/.ssh/id_ed25519.pub
-
-#    d) Switch this repo’s remote to SSH (only needs to be done once)
+# 4) Switch this repo’s remote to SSH (only needs to be done once)
 git remote set-url origin git@github.com:hazzymazzy/retail-ecommerce-migration.git
 
-#    e) Test SSH auth (expect “Hi <username>! …”)
+# 5) Test SSH auth
 ssh -T git@github.com
 ```
-
-> **Alternative (not recommended):** HTTPS + Personal Access Token (PAT). If you must: create a PAT on GitHub with `repo` scope and use it as the password when `git push` prompts.
 
 ---
 
 ## 2) Per-session quickstart (every new CloudShell session)
 
 ```bash
-# Enter the repo
 cd ~/retail-ecommerce-migration
-
-# Start SSH agent and load your key (CloudShell forgets between sessions)
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 
-# Sanity checks
-git remote -v              # should show git@github.com:hazzymazzy/retail-ecommerce-migration.git
-ssh -T git@github.com      # should say “Hi <you>! …”
+git remote -v              # confirm SSH
+ssh -T git@github.com      # expect “Hi hazzymazzy! …”
 export AWS_REGION=ap-southeast-2
 ```
 
 ---
 
-## 3) Install Terraform (only if `terraform` isn’t found)
+## 3) Install Terraform (only if missing)
 
 ```bash
-# Add HashiCorp repo and install Terraform (Amazon Linux / CloudShell)
 sudo yum -y install yum-utils
 sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
 sudo yum -y install terraform
@@ -114,47 +106,32 @@ which terraform
 
 ## 4) Deploy the prototype (S3 + CloudFront via Terraform)
 
-> Our working IaC is **single-file** at `terraform/main.tf`. It creates a **private** S3 bucket and serves it via **CloudFront OAC**.
+> Our working IaC is **single-file** at `terraform/main.tf`.
 
 ```bash
 cd ~/retail-ecommerce-migration/terraform
 
-# Make sure only main.tf exists (avoids duplicate outputs/conflicts)
-ls -1 *.tf
-# If you see old split files (cloudfront.tf/outputs.tf/s3.tf/variables.tf), delete them:
-# rm -f cloudfront.tf outputs.tf s3.tf variables.tf
+# Clean up old .tf files if needed
+rm -f cloudfront.tf outputs.tf s3.tf variables.tf providers.tf
 
-# Ensure website files exist (they’re in ../website)
+# Ensure website files exist
 [ -f ../website/index.html ] || echo "<h1>Retail Store Demo</h1>" > ../website/index.html
 [ -f ../website/error.html ] || echo "<h1>404</h1>" > ../website/error.html
 
-# Init & plan
 terraform init -upgrade
 terraform plan -out=tfplan
-
-# Apply (creates bucket, uploads files, makes the CloudFront distribution)
 terraform apply -auto-approve tfplan
 
-# Get the public URL
+# Get public URL
 terraform output -raw cloudfront_url
 ```
-
-> **Note:** CloudFront takes ~2–4 minutes to deploy after `apply`.
-
-### Bucket name uniqueness
-
-By default the bucket name suffix is set inside `main.tf` under `variable "bucket_name_suffix"`.
-If `terraform apply` fails with **BucketAlreadyExists**, edit the default to something unique (e.g., your initials + random), then re-`init/plan/apply`.
 
 ---
 
 ## 5) Update website content
 
 ```bash
-# Edit the site content
 nano ../website/index.html
-
-# Re-upload happens automatically on next `terraform apply`
 terraform plan -out=tfplan
 terraform apply -auto-approve tfplan
 ```
@@ -162,8 +139,6 @@ terraform apply -auto-approve tfplan
 ---
 
 ## 6) Clean up (important for shared labs)
-
-When you’re done, destroy to avoid extra resources lingering:
 
 ```bash
 cd ~/retail-ecommerce-migration/terraform
@@ -176,14 +151,10 @@ terraform destroy -auto-approve
 
 ```bash
 cd ~/retail-ecommerce-migration
-
-# Make sure we don’t commit local state/plan files
-# (Already in .gitignore, but just in case)
 printf '%s\n' \
 '.terraform/' '.terraform.lock.hcl' \
 'terraform.tfstate' 'terraform.tfstate.backup' '*.tfstate*' \
-'crash.log' '*.tfplan' \
-'.DS_Store' 'Thumbs.db' >> .gitignore
+'crash.log' '*.tfplan' '.DS_Store' 'Thumbs.db' >> .gitignore
 
 git add -A
 git commit -m "Update site / Terraform config"
@@ -192,52 +163,94 @@ git push origin main
 
 ---
 
+## 8) Automatically Update the Live Demo URL (CloudFront link)
+
+After a successful Terraform deployment, you can **automatically update** the `## Live demo` section in `README.md` using this helper script.
+
+### Create the script (only once)
+
+```bash
+mkdir -p scripts
+cat > scripts/update-readme-url.sh <<'EOS'
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+CF_URL="$(terraform -chdir=terraform output -raw cloudfront_url 2>/dev/null || true)"
+if [[ -z "${CF_URL:-}" ]]; then
+  echo "No cloudfront_url output found. Run 'terraform apply' first." >&2
+  exit 1
+fi
+
+if grep -q '^CloudFront:' README.md; then
+  sed -i "s#^CloudFront: .*#CloudFront: ${CF_URL}#g" README.md
+else
+  printf "\n## Live demo\nCloudFront: %s\n" "$CF_URL" >> README.md
+fi
+
+git add README.md
+git commit -m "docs: update Live Demo URL to ${CF_URL}" || true
+git push origin main
+echo "README updated → ${CF_URL}"
+EOS
+chmod +x scripts/update-readme-url.sh
+```
+
+### Use it (after each successful deployment)
+
+```bash
+./scripts/update-readme-url.sh
+```
+
+> This ensures everyone always sees the **latest CloudFront demo URL** on GitHub.
+
+---
+
 ## Troubleshooting
 
 ### `AccessDenied: s3:GetBucketObjectLockConfiguration`
 
-* You’re on restrictive Academy IAM policies. Our config **creates the S3 bucket via CLI** in `null_resource` to avoid that read. Make sure you’re using the provided `main.tf` (single file) and not the older split files.
+Use the single-file `terraform/main.tf` (old split files cause this).
 
 ### `BucketAlreadyExists`
 
-* Change `bucket_name_suffix` in `main.tf` to a unique value, then `terraform init -upgrade && terraform apply` again.
+Change the `bucket_name_suffix` in `main.tf` to a unique value.
 
 ### `Permission denied (publickey)` on `git push`
 
-* You’re in a fresh CloudShell. Run:
+Run:
 
-  ```bash
-  eval "$(ssh-agent -s)"
-  ssh-add ~/.ssh/id_ed25519
-  ssh -T git@github.com
-  ```
-* Confirm the repo remote is SSH:
-
-  ```bash
-  git remote -v
-  # if not SSH, run:
-  git remote set-url origin git@github.com:hazzymazzy/retail-ecommerce-migration.git
-  ```
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+ssh -T git@github.com
+```
 
 ### “Duplicate output definition”
 
-* Delete leftover files:
+Remove leftover split files:
 
-  ```bash
-  cd terraform
-  rm -f cloudfront.tf outputs.tf s3.tf variables.tf
-  terraform init -upgrade
-  ```
+```bash
+cd terraform
+rm -f cloudfront.tf outputs.tf s3.tf variables.tf
+terraform init -upgrade
+```
 
-### Terraform stuck or confused?
+### Terraform confused?
 
-* Nuke local state **only if necessary** (this deletes local state; use with care):
+Reset local state (use carefully):
 
-  ```bash
-  rm -f terraform.tfstate terraform.tfstate.backup tfplan
-  terraform init -upgrade
-  ```
+```bash
+rm -f terraform.tfstate terraform.tfstate.backup tfplan
+terraform init -upgrade
+```
 
 ---
 
+**All Group Members can follow this README to deploy, update, or destroy the demo app in AWS CloudShell (Sydney region).**
 
+```
+
+---
+
+```

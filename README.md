@@ -99,7 +99,7 @@ terraform destroy
 
 ## 🌐 Live demo
 
-CloudFront: [https://d14rlgaavaj9fb.cloudfront.net](https://d14rlgaavaj9fb.cloudfront.net)
+CloudFront: https://d1gd53n8lrwf08.cloudfront.net
 
 ---
 

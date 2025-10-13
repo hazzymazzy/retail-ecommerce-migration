@@ -7,113 +7,134 @@
 
 ---
 
-This project deploys a **static retail website** to **Amazon S3** and serves it globally via **CloudFront CDN**, fully provisioned using **Terraform (Infrastructure as Code)**.
+This project deploys a **static retail website** to **Amazon S3** and delivers it globally via **CloudFront CDN**, fully provisioned using **Terraform (Infrastructure as Code)**.
 
-✅ **Single-file Terraform setup (`main.tf`)** ensures easy assessment and reproducibility.  
-✅ **No manual GitHub update required by tutor** — CloudFront URL logs are maintained only for tracking.  
-✅ Aligned with **AWS Well-Architected Framework**: *Security, Cost Optimisation, Performance Efficiency, Reliability, and Operational Excellence.*
+✅ **Single-file Terraform deployment (`main.tf`)** — easy for assessment and reproducibility  
+✅ **No manual AWS Console configuration** — full IaC automation  
+✅ **Live CloudFront URL generated automatically on deploy** — ready for showcase  
+✅ Aligned with AWS Well-Architected principles: **Security, Cost Efficiency, Performance, Reliability, and Operational Excellence**
 
 ---
 
-## 🌐 Live Demo (Team Deployment Instance)
+## Live Demo (Team Deployment Instance)
 
 CloudFront URL: **https://d1gd53n8lrwf08.cloudfront.net**
 
-> ⚠ **Note for Assessment:** This URL reflects our deployed instance.  
-> When **Terraform is applied in the AWS Academy Sandbox**, a **new CloudFront URL will be automatically generated** 
+> ℹ **Note:** This URL was generated from our team deployment.  
+> When `terraform apply` is executed in the AWS Academy Sandbox, **a new CloudFront URL will be generated automatically**.  
+> This tracking is for **logging and demonstration purposes only.**.
 
 ---
 
 ## Project Architecture Overview
 
-### **Design Summary**
+The full architecture explanation with diagram is included in the **report submission**.
 
-The architecture uses AWS managed services to host a globally distributed static retail site securely and cost-effectively.  
-It highlights **automation with Terraform**, **CDN performance via CloudFront**, and **restricted S3 access using OAC (Origin Access Control).**
-
-### **Core AWS Components**
-
-| Component | Purpose |
-|------------|--------|
-| **S3 Bucket (Private)** | Stores static website assets (`index.html`, `404.html`) with versioning. |
-| **CloudFront Distribution** | Delivers content globally with caching and HTTPS enforcement. |
-| **Origin Access Control (OAC)** | Protects S3 by allowing only CloudFront access (no public S3 URLs). |
-| **Terraform IaC** | Automates complete provisioning with a **single config file**. |
-| **IAM Security Model** | Follows least privilege and AWS Sandbox security compliance. |
-
-### **High-Level Architecture Diagram**
-
-```
-User → CloudFront (HTTPS, CDN, OAC) → Private S3 Bucket → Optional Glacier Archival
-```
+> **See detailed architecture and justification in the report** (CloudFront → OAC → Private S3 Bucket → Optional Glacier Lifecycle)
 
 ---
 
 ## Deployment Instructions (AWS Academy Sandbox)
 
-### 1. Initialise and Deploy
+### ✅ **0. Clone the Repository (Get the Code)**  
+Cloning ensures you are working with the **latest Terraform and website files**.
 
+**Option A — HTTPS**
 ```bash
-cd terraform
-terraform init
-terraform plan -out=tfplan
-terraform apply -auto-approve tfplan
+git clone https://github.com/hazzymazzy/retail-ecommerce-migration.git
+cd retail-ecommerce-migration/terraform
 ```
 
-### 2. Retrieve URL
+**Option B — SSH** (only if SSH keys are configured)
+```bash
+git clone git@github.com:hazzymazzy/retail-ecommerce-migration.git
+cd retail-ecommerce-migration/terraform
+```
+> **Note:** SSH is **optional** and only used for pushing changes back to GitHub.  
+> **Assessment does not require SSH** — only `terraform apply` is needed to deploy.
 
+---
+
+### **(Optional) Set AWS Region for CloudShell**
+```bash
+export AWS_REGION=ap-southeast-2
+```
+> Ensures deployment happens in the correct AWS Academy Sandbox region (Sydney).
+
+---
+
+### **1. Initialise and Deploy**
+```bash
+terraform init
+```
+> Prepares Terraform by downloading the AWS provider.
+
+```bash
+terraform plan -out=tfplan
+```
+> Shows the resources that will be created before deploying.
+
+```bash
+terraform apply -auto-approve tfplan
+```
+> Deploys S3, CloudFront, IAM roles, and OAC automatically.
+
+---
+
+### **2. Retrieve Website URL**
 ```bash
 terraform output -raw cloudfront_url
 ```
+> Fetches the live CloudFront URL for the deployed site.
 
-Open the URL in a browser — *deployment takes around 2–4 minutes to propagate.*
+> CloudFront may take **2–4 minutes** to fully propagate after deployment.
 
 ---
 
-## 🧼 Destroy Resources (To Release AWS Sandbox Credits)
-
+### **3. Destroy Resources (To Free AWS Sandbox Credits)**
 ```bash
 terraform destroy -auto-approve
 ```
+> Deprovisions all AWS resources to avoid hitting sandbox limits.
+
+
 
 ---
 
-## 🛠 Website Content & Team Credit Line
+## Website Footer Credit
 
-The static website includes a **footer line** displaying:
+The deployed static website displays this footer for project attribution:
 
 > **Built by Hardik, Andrea, Daniel, Joseph — 2025 CCA UG**
 
-This is visible at the bottom of `index.html`.
-
 ---
 
-## GitHub Tracking (For Team History Only)
+## GitHub Tracking (Optional — For Development Logging Only)
 
-We maintain CloudFront deployment logs with a helper script:
+A helper script is included for internal use to log CloudFront URLs into README:
 
 ```bash
 ./scripts/update-readme-url.sh
 ```
 
-> ⚠ **This is not required for grading** — it just keeps our repo history consistent.
+> ⚠ This script is **not required for marking** — it was only used during development to keep version history clean.
 
 ---
 
-## AWS Well-Architected Pillar Alignment (Brief Justification)
+## AWS Well-Architected Pillar Summary (Quick Justification)
 
-| Pillar | Applied Strategy |
-|--------|-----------------|
-| **Security** | Private S3 + CloudFront OAC + HTTPS enforced |
-| **Cost Optimisation** | Static hosting via S3 & CDN — no EC2 or backend compute cost |
-| **Performance Efficiency** | CloudFront edge caching for low-latency global access |
-| **Reliability** | CDN reliability + versioned S3 means quick rollback |
-| **Operational Excellence** | Terraform IaC = consistent, repeatable deployment with no console clicking |
+| AWS Pillar | Implementation Insight |
+|-----------|------------------------|
+| **Security** | Private S3 bucket + OAC + HTTPS-only CloudFront |
+| **Cost Optimisation** | Serverless static hosting — no EC2 or backend costs |
+| **Performance Efficiency** | CloudFront global CDN caching reduces latency |
+| **Reliability** | Versioned S3 + Terraform IaC = predictable redeployment |
+| **Operational Excellence** | Automated deployment with repeatable infrastructure state |
 
 ---
 
-## 👥 Team 
-This project was developed as part of AWS Academy – Cloud Computing Architecting coursework, submitted by
-Group 5: Hardik, Andrea, Daniel, and Joseph — 2025 CCA
+## Team Submission Note
 
+Submitted as part of **AWS Academy – Cloud Computing Architecting (CCA UG)**  
+**Group 5** — Hardik, Andrea, Daniel, and Joseph — **2025**
 

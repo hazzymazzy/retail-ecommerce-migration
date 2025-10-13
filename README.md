@@ -36,7 +36,7 @@ The full architecture explanation with diagram is included in the **report submi
 
 ## Deployment Instructions (AWS Academy Sandbox)
 
-### ✅ **0. Clone the Repository (Get the Code)**  
+### **0. Clone the Repository (Get the Code)**  
 Cloning ensures you are working with the **latest Terraform and website files**.
 
 **Option A — HTTPS**

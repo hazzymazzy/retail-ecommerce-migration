@@ -1,9 +1,9 @@
+# cloudfront.tf (custom origin → S3 Website; no OAC, no S3 resources)
 cat > cloudfront.tf <<'EOF'
-# CloudFront distribution using S3 Website (custom origin, no OAC, no TF-managed S3)
 resource "aws_cloudfront_distribution" "cdn" {
   enabled             = true
   default_root_object = "index.html"
-  price_class         = "PriceClass_100"  # sandbox-friendly
+  price_class         = "PriceClass_100"
   tags                = local.common_tags
 
   origin {

@@ -1,18 +1,18 @@
-# CloudFront distribution using S3 Website (custom origin, no OAC)
+# CloudFront distribution using S3 Website (custom origin, no OAC, no TF-managed S3)
 resource "aws_cloudfront_distribution" "cdn" {
   enabled             = true
   default_root_object = "index.html"
-  price_class         = "PriceClass_100"  # keep costs low in sandbox
+  price_class         = "PriceClass_100"  # sandbox-friendly
   tags                = local.common_tags
 
   origin {
-    domain_name = var.s3_website_origin      # e.g. my-bucket.s3-website-ap-southeast-2.amazonaws.com
+    domain_name = var.s3_website_origin  # e.g. my-bucket.s3-website-ap-southeast-2.amazonaws.com
     origin_id   = "s3-website-origin"
 
     custom_origin_config {
       http_port              = 80
       https_port             = 443
-      origin_protocol_policy = "http-only"   # S3 website endpoints speak HTTP only
+      origin_protocol_policy = "http-only"   # S3 website endpoints are HTTP-only
       origin_ssl_protocols   = ["TLSv1.2"]
     }
   }

@@ -35,91 +35,83 @@ The full architecture explanation with diagram is included in the **report submi
 ---
 
 ## Deployment Instructions (AWS Academy Sandbox)
+0. Clone the Repository (Get the Code)
 
-### **0. Clone the Repository (Get the Code)**  
-Cloning ensures you are working with the **latest Terraform and website files**.
+Cloning ensures you are working with the latest Terraform and website files.
 
-**Option A — HTTPS**
-```bash
+Option A — HTTPS
+
 git clone https://github.com/hazzymazzy/retail-ecommerce-migration.git
 cd retail-ecommerce-migration/terraform
-```
 
-**Option B — SSH** (only if SSH keys are configured)
-```bash
+
+Option B — SSH (optional, only if GitHub SSH keys are set up)
+
 git clone git@github.com:hazzymazzy/retail-ecommerce-migration.git
 cd retail-ecommerce-migration/terraform
-```
-> **Note:** SSH is **optional** and only used for pushing changes back to GitHub.  
-> **Assessment does not require SSH** — only `terraform apply` is needed to deploy.
 
----
 
-### **(Optional) Set AWS Region for CloudShell**
-```bash
+Note: SSH is only needed for pushing changes back to GitHub.
+For assessment, only terraform apply is required — SSH is not needed.
+
+(Optional for CloudShell users) Set AWS Region
 export AWS_REGION=ap-southeast-2
-```
-> Ensures deployment happens in the correct AWS Academy Sandbox region (Sydney).
 
----
 
-### **1. Initialise and Deploy**
-```bash
+Ensures deployment happens in the correct AWS Academy Sandbox region (Sydney).
+
+(Only if Terraform is not installed) Install Terraform
+sudo yum -y install yum-utils
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+sudo yum -y install terraform
+
+# Verify installation:
+terraform -version
+
+
+This step is required only once per CloudShell session if Terraform is not available.
+
+1. Initialise and Deploy
 terraform init
-```
-> Prepares Terraform by downloading the AWS provider.
 
-```bash
+
+Downloads AWS providers and prepares the working directory.
+
 terraform plan -out=tfplan
-```
-> Shows the resources that will be created before deploying.
 
-```bash
+
+Displays what Terraform will create — good practice before applying.
+
 terraform apply -auto-approve tfplan
-```
-> Deploys S3, CloudFront, IAM roles, and OAC automatically.
 
----
 
-### **2. Retrieve Website URL**
-```bash
+Provisions S3, CloudFront, IAM roles, and OAC automatically.
+
+2. Retrieve Website URL
 terraform output -raw cloudfront_url
-```
-> Fetches the live CloudFront URL for the deployed site.
 
-> CloudFront may take **2–4 minutes** to fully propagate after deployment.
 
----
+Fetches the live CloudFront URL for the deployed website.
 
-### **3. Destroy Resources (To Free AWS Sandbox Credits)**
-```bash
+CloudFront may take 2–4 minutes to finish global propagation.
+
+3. Destroy Resources (To Free AWS Sandbox Credits)
 terraform destroy -auto-approve
-```
-> Deprovisions all AWS resources to avoid hitting sandbox limits.
 
 
+Safely removes all deployed AWS resources to stay within sandbox credit limits.
 
----
+Website Footer Credit
 
-## Website Footer Credit
+The deployed static site contains this footer for attribution:
 
-The deployed static website displays this footer for project attribution:
+Built by Hardik, Andrea, Daniel, Joseph — 2025 CCA UG
 
-> **Built by Hardik, Andrea, Daniel, Joseph — 2025 CCA UG**
-
----
-
-## GitHub Tracking (Optional — For Development Logging Only)
-
-A helper script is included for internal use to log CloudFront URLs into README:
-
-```bash
+GitHub Tracking (Optional — For Development Logging Only)
 ./scripts/update-readme-url.sh
-```
 
-> ⚠ This script is **not required for marking** — it was only used during development to keep version history clean.
 
----
+Not required for marking — used only to log CloudFront URLs during development for tracking.
 
 ## AWS Well-Architected Pillar Summary (Quick Justification)
 

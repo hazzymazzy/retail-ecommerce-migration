@@ -1,5 +1,3 @@
----
-
 # 🛒 Retail E-Commerce Migration (AWS Cloud Project)
 
 **Project:** Retail Static Website Cloud Deployment using AWS & Terraform

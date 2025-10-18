@@ -34,84 +34,123 @@ The full architecture explanation with diagram is included in the **report submi
 
 ---
 
-## Deployment Instructions (AWS Academy Sandbox)
-0. Clone the Repository (Get the Code)
+Here’s your **GitHub-ready** version of the **Deployment Instructions**, formatted with ✅ emojis and spacing for clean readability in Markdown:
+
+---
+
+## 🚀 Deployment Instructions (AWS Academy Sandbox)
+
+### **0. Clone the Repository (Get the Code)**
 
 Cloning ensures you are working with the latest Terraform and website files.
 
-Option A — HTTPS
+**Option A — HTTPS**
 
+```bash
 git clone https://github.com/hazzymazzy/retail-ecommerce-migration.git
 cd retail-ecommerce-migration/terraform
+```
 
+**Option B — SSH** *(optional, only if GitHub SSH keys are set up)*
 
-Option B — SSH (optional, only if GitHub SSH keys are set up)
-
+```bash
 git clone git@github.com:hazzymazzy/retail-ecommerce-migration.git
 cd retail-ecommerce-migration/terraform
+```
 
+> 💡 **Note:** SSH is **only needed for pushing changes back to GitHub**.
+> For assessment, only `terraform apply` is required — **SSH is not needed**.
 
-Note: SSH is only needed for pushing changes back to GitHub.
-For assessment, only terraform apply is required — SSH is not needed.
+---
 
-(Optional for CloudShell users) Set AWS Region
+### **(Optional for CloudShell Users) Set AWS Region**
+
+```bash
 export AWS_REGION=ap-southeast-2
+```
 
+> Ensures deployment happens in the correct AWS Academy Sandbox region (**Sydney**).
 
-Ensures deployment happens in the correct AWS Academy Sandbox region (Sydney).
+---
 
-(Only if Terraform is not installed) Install Terraform
+### ⚙ **(Only if Terraform is not installed) Install Terraform**
+
+```bash
 sudo yum -y install yum-utils
 sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
 sudo yum -y install terraform
 
 # Verify installation:
 terraform -version
+```
 
+> ⚠ Run this step **only if** `terraform` command is not available.
 
-This step is required only once per CloudShell session if Terraform is not available.
+---
 
-1. Initialise and Deploy
+### **1. Initialise and Deploy**
+
+```bash
 terraform init
+```
 
+> Downloads providers and sets up the working directory.
 
-Downloads AWS providers and prepares the working directory.
-
+```bash
 terraform plan -out=tfplan
+```
 
+> Shows what Terraform will create before applying.
 
-Displays what Terraform will create — good practice before applying.
-
+```bash
 terraform apply -auto-approve tfplan
+```
 
+> Deploys **S3, CloudFront, IAM roles, and OAC** automatically.
 
-Provisions S3, CloudFront, IAM roles, and OAC automatically.
+---
 
-2. Retrieve Website URL
+### **2. Retrieve Website URL**
+
+```bash
 terraform output -raw cloudfront_url
+```
 
+> Retrieves the **live CloudFront URL** for the deployed website.
 
-Fetches the live CloudFront URL for the deployed website.
+> ⏳ **CloudFront may take 2–4 minutes** to fully propagate.
 
-CloudFront may take 2–4 minutes to finish global propagation.
+---
 
-3. Destroy Resources (To Free AWS Sandbox Credits)
+### **3. Destroy Resources (To Free AWS Sandbox Credits)**
+
+```bash
 terraform destroy -auto-approve
+```
 
+> Safely removes AWS resources to stay within **sandbox credit limits**.
 
-Safely removes all deployed AWS resources to stay within sandbox credit limits.
+---
 
-Website Footer Credit
+### **Website Footer Credit**
 
-The deployed static site contains this footer for attribution:
+The deployed static site displays this footer for attribution:
 
-Built by Hardik, Andrea, Daniel, Joseph — 2025 CCA UG
+> **Built by Hardik, Andrea, Daniel, Joseph — 2025 CCA UG**
 
-GitHub Tracking (Optional — For Development Logging Only)
+---
+
+### **GitHub Tracking (Optional — For Development Logging Only)**
+
+```bash
 ./scripts/update-readme-url.sh
+```
+
+> ⚠ **Not required for marking** — used only to log CloudFront URLs during development.
+
+---
 
 
-Not required for marking — used only to log CloudFront URLs during development for tracking.
 
 ## AWS Well-Architected Pillar Summary (Quick Justification)
 

@@ -1,5 +1,5 @@
-# cloudfront.tf (custom origin → S3 Website; no OAC, no S3 resources)
 cat > cloudfront.tf <<'EOF'
+# CloudFront distribution using S3 Website (custom origin, no OAC, no TF-managed S3)
 resource "aws_cloudfront_distribution" "cdn" {
   enabled             = true
   default_root_object = "index.html"
@@ -7,7 +7,8 @@ resource "aws_cloudfront_distribution" "cdn" {
   tags                = local.common_tags
 
   origin {
-    domain_name = var.s3_website_origin  # e.g. my-bucket.s3-website-ap-southeast-2.amazonaws.com
+    # HARD-CODED S3 WEBSITE ENDPOINT HOSTNAME:
+    domain_name = "retail-demo-1760753429.s3-website-ap-southeast-2.amazonaws.com"
     origin_id   = "s3-website-origin"
 
     custom_origin_config {

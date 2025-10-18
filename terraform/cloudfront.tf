@@ -5,13 +5,14 @@ resource "aws_cloudfront_distribution" "cdn" {
   price_class         = "PriceClass_100"
 
   origin {
+    # Hardcode your S3 website endpoint hostname here:
     domain_name = "retail-demo-1760753429.s3-website-ap-southeast-2.amazonaws.com"
     origin_id   = "s3-website-origin"
 
     custom_origin_config {
       http_port              = 80
       https_port             = 443
-      origin_protocol_policy = "http-only"
+      origin_protocol_policy = "http-only"   # S3 website endpoints are HTTP-only
       origin_ssl_protocols   = ["TLSv1.2"]
     }
   }

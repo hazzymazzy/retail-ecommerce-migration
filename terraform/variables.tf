@@ -1,21 +1,20 @@
 variable "aws_region" {
   description = "AWS region to deploy to"
-variable "aws_region" {
-  description = "AWS region to deploy to"
   type        = string
   default     = "ap-southeast-2" # Sydney
 }
 
-# S3 bucket names must be globally unique
+# S3 bucket names must be globally unique (kept for compatibility)
 variable "bucket_name_suffix" {
-  description = "Unique suffix for the S3 bucket name"
+  description = "Unique suffix for the S3 bucket name (not used when S3 is CLI-managed)"
   type        = string
-  default     = "hazzy-uc-2025"   # chosen suffix (ignored once we handle S3 via CLI)
+  default     = "hazzy-uc-2025"
 }
 
-# ✅ ADD THIS NEW BLOCK ↓
+# NEW: pass your S3 website endpoint host to CloudFront
+# e.g. retail-demo-1700000000.s3-website-ap-southeast-2.amazonaws.com
 variable "s3_website_origin" {
-  description = "S3 website endpoint hostname (e.g., retail-demo-123.s3-website-ap-southeast-2.amazonaws.com)"
+  description = "S3 website endpoint hostname for CloudFront custom origin"
   type        = string
 }
 

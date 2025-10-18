@@ -1,7 +1,8 @@
 # PRIVATE S3 bucket for site content (no public access)
 resource "aws_s3_bucket" "website" {
-  bucket = local.bucket_name
-  tags   = local.common_tags
+  bucket        = local.bucket_name
+  tags          = local.common_tags
+  force_destroy = true
 }
 
 # Block ALL public access

@@ -1,7 +1,7 @@
 # 🛒 Retail E-Commerce Migration (AWS Cloud Project)
 
 **Project:** Retail Static Website Cloud Deployment using AWS & Terraform  
-**Team:** Hardik, Andrea, Daniel, Joseph – 2025 CCA UG (Group 5)  
+**Team:** Hardik, Andrea, Daniel, Joseph – 2025 CCA UG (Group 1)  
 **Instructor:** Essam  
 **Unit:** Cloud Computing Architecting (AWS Academy)
 

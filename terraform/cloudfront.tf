@@ -3,7 +3,7 @@ cat > cloudfront.tf <<'EOF'
 resource "aws_cloudfront_distribution" "cdn" {
   enabled             = true
   default_root_object = "index.html"
-  price_class         = "PriceClass_100"
+  price_class         = "PriceClass_100"  # sandbox-friendly
   tags                = local.common_tags
 
   origin {
@@ -31,7 +31,6 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 
   restrictions { geo_restriction { restriction_type = "none" } }
-
   viewer_certificate { cloudfront_default_certificate = true }
 }
 

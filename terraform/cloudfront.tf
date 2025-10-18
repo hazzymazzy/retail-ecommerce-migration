@@ -1,25 +1,24 @@
-# Origin Access Control so CloudFront can read PRIVATE S3
-resource "aws_cloudfront_origin_access_control" "oac" {
-  name                              = "${local.bucket_name}-oac"
-  description                       = "OAC for private S3 origin"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
-}
-
-# CloudFront distribution (HTTPS) serving from PRIVATE S3 via OAC
+# CloudFront distribution using S3 Website (custom origin, no OAC)
 resource "aws_cloudfront_distribution" "cdn" {
   enabled             = true
   default_root_object = "index.html"
+  price_class         = "PriceClass_100"  # keep costs low in sandbox
+  tags                = local.common_tags
 
   origin {
-    origin_id                = "s3-origin"
-    domain_name              = aws_s3_bucket.website.bucket_regional_domain_name
-    origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
+    domain_name = var.s3_website_origin      # e.g. my-bucket.s3-website-ap-southeast-2.amazonaws.com
+    origin_id   = "s3-website-origin"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"   # S3 website endpoints speak HTTP only
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
   }
 
   default_cache_behavior {
-    target_origin_id       = "s3-origin"
+    target_origin_id       = "s3-website-origin"
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
@@ -37,33 +36,6 @@ resource "aws_cloudfront_distribution" "cdn" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
-
-  tags = local.common_tags
-}
-
-# Bucket policy granting CloudFront access via OAC (keeps S3 private)
-data "aws_caller_identity" "current" {}
-
-resource "aws_s3_bucket_policy" "allow_cloudfront" {
-  bucket = aws_s3_bucket.website.id
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Sid: "AllowCloudFrontServicePrincipalReadOnly",
-        Effect: "Allow",
-        Principal: { Service: "cloudfront.amazonaws.com" },
-        Action: ["s3:GetObject"],
-        Resource: "${aws_s3_bucket.website.arn}/*",
-        Condition: {
-          StringEquals: {
-            "AWS:SourceArn": "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/${aws_cloudfront_distribution.cdn.id}"
-          }
-        }
-      }
-    ]
-  })
-  depends_on = [aws_cloudfront_distribution.cdn]
 }
 
 output "cloudfront_url" {

@@ -5,14 +5,14 @@ variable "aws_region" {
   default     = "ap-southeast-2" # Sydney
 }
 
-# S3 bucket names must be globally unique (kept for compatibility)
+# Kept for compatibility (not used when S3 is CLI-managed)
 variable "bucket_name_suffix" {
-  description = "Unique suffix for the S3 bucket name (unused when S3 is CLI-managed)"
+  description = "Unique suffix for S3 bucket (unused in this path)"
   type        = string
   default     = "hazzy-uc-2025"
 }
 
-# REQUIRED for custom-origin CloudFront:
+# ✅ REQUIRED: pass the S3 website endpoint hostname to CloudFront
 # e.g. retail-demo-1700000000.s3-website-ap-southeast-2.amazonaws.com
 variable "s3_website_origin" {
   description = "S3 website endpoint hostname for CloudFront custom origin"
